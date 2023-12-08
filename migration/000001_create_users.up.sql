@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS users(
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    dob DATE NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR NOT NULL,
+    created_at TIMESTAMP NOT NULL.
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
+);
