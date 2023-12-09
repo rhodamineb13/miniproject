@@ -1,13 +1,17 @@
 package main
 
 import (
-	"log"
-	"miniproject/common/database"
+	"miniproject/common/shared"
+	"net/http"
 )
 
 func main() {
-	_, err := database.ConnectDB()
-	if err != nil {
-		log.Fatal(err)
+	r := shared.Route()
+
+	s := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
 	}
+
+	s.ListenAndServe()
 }
