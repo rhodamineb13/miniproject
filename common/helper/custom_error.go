@@ -13,6 +13,10 @@ type CustomError struct {
 var (
 	ErrRegisterFailed  = NewCustomError(http.StatusBadRequest, "error in registering user")
 	ErrParseTimeFormat = NewCustomError(http.StatusBadRequest, "error parsing time format")
+	ErrLogin           = NewCustomError(http.StatusBadRequest, "email or password is incorrect")
+	ErrAddBook         = NewCustomError(http.StatusBadRequest, "error adding new book")
+	ErrBooksEmpty      = NewCustomError(http.StatusOK, "there are no books yet")
+	ErrBookNotFound    = NewCustomError(http.StatusNotFound, "book not found")
 )
 
 func NewCustomError(statusCode int, message string) error {

@@ -28,6 +28,22 @@ func (u *UserHandler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusAccepted, "register succeed")
 }
 
+func (u *UserHandler) Login(c *gin.Context) {
+	var login *dto.UserLoginDTO
+
+	if err := c.ShouldBindJSON(&login); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if err := u.userService.Login(c, login); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusAccepted, "login success")
+}
+
 func NewUserHandler(userService service.UserService) *UserHandler {
 	return &UserHandler{
 		userService: userService,

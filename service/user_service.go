@@ -15,6 +15,7 @@ type userService struct {
 
 type UserService interface {
 	Register(context.Context, *dto.RegisterUserDTO) error
+	Login(context.Context, *dto.UserLoginDTO) error
 }
 
 func (u *userService) Register(ctx context.Context, reg *dto.RegisterUserDTO) error {
@@ -32,8 +33,16 @@ func (u *userService) Register(ctx context.Context, reg *dto.RegisterUserDTO) er
 	err = u.userRepo.Insert(ctx, regDB)
 
 	if err != nil {
-		log.Println(err)
 		return helper.ErrRegisterFailed
+	}
+	return nil
+}
+
+func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) error {
+	err := u.userRepo.VerifyUser(ctx, login)
+	if err != nil {
+		log.Println(err)
+		return helper.ErrLogin
 	}
 	return nil
 }

@@ -9,6 +9,22 @@ type RegisterUserDTO struct {
 	Password string `json:"password" binding:"required,min=8"`
 }
 
+type UserLoginDTO struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type GetUserDTO struct {
+	ID        uint       `db:"id"`
+	Name      string     `db:"name"`
+	DOB       time.Time  `db:"date_of_birth"`
+	Email     string     `db:"email"`
+	Password  string     `db:"password"`
+	CreatedAt time.Time  `db:"created_at"`
+	UpdatedAt time.Time  `db:"updated_at"`
+	DeletedAt *time.Time `db:"deleted_at"`
+}
+
 type RegisterDBDTO struct {
 	Name     string    `db:"name"`
 	DOB      time.Time `db:"date_of_birth"`

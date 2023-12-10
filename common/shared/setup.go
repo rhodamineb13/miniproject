@@ -9,6 +9,7 @@ import (
 
 type Handler struct {
 	UserHandler *handler.UserHandler
+	BookHandler *handler.BookHandler
 }
 
 func NewHandler() (*Handler, error) {
@@ -18,8 +19,10 @@ func NewHandler() (*Handler, error) {
 	}
 
 	userHandler := handler.NewUserHandler(service.NewUserService(repository.NewUserRepo(db)))
+	bookHandler := handler.NewBookHandler(service.NewBookService(repository.NewBookRepo(db)))
 
 	return &Handler{
 		UserHandler: userHandler,
+		BookHandler: bookHandler,
 	}, nil
 }

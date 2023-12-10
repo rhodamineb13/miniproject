@@ -12,11 +12,17 @@ func Route() *gin.Engine {
 
 	handler, err := NewHandler()
 	if err != nil {
-		log.Fatalf("error in creating handler")
+		log.Fatalf(err.Error() + ": error in creating handler")
 	}
 
-	user := r.Group("/user", middleware.ErrorHandler())
-	user.POST("/sign-up", handler.UserHandler.RegisterUser)
+	r.Use(middleware.ErrorHandler())
+	r.POST("/sign-up", handler.UserHandler.RegisterUser)
+	r.POST("/login", handler.UserHandler.Login)
+
+	books := r.Group("/books")
+	books.GET("", handler.BookHandler.GetAllBooks)
+	books.GET("/:id", handler.BookHandler.FindBookByID)
+	books.POST("", handler.BookHandler.AddNewBook)
 
 	return r
 }
