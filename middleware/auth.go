@@ -16,12 +16,14 @@ func Authorization(roles ...crypto.Role) gin.HandlerFunc {
 		claims, err := crypto.ValidateToken(reqToken)
 		if err != nil {
 			_ = c.Error(err)
+			c.Abort()
 			return
 		}
 
 		for _, role := range claims.Role {
 			if !utils.CheckRole(role, roles) {
 				_ = c.Error(err)
+				c.Abort()
 				return
 			}
 		}

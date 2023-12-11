@@ -27,7 +27,7 @@ func NewClaims(email string, roles []Role) jwt.Claims {
 	claims := &jwt.RegisteredClaims{
 		Issuer: config.Config.Issuer,
 		ExpiresAt: &jwt.NumericDate{
-			Time: time.Now().Add(time.Duration(config.Config.Duration)),
+			Time: time.Now().Add(time.Hour * time.Duration(config.Config.Duration)),
 		},
 	}
 
@@ -53,16 +53,20 @@ func GenerateNewToken(email string, roles []Role) (string, error) {
 
 func ValidateToken(accessToken string) (*JWTClaims, error) {
 	var claims *JWTClaims
-	token, err := jwt.ParseWithClaims(accessToken, claims, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &JWTClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, helper.ErrParseToken
 		}
-		return config.Config.LibSecretKey, nil
+		return []byte(config.Config.LibSecretKey), nil
 	})
 
 	if err != nil || !token.Valid {
 		return nil, helper.ErrInvalidToken
 	}
 
-	return claims, nil
+	if claims, ok := token.Claims.(*JWTClaims); ok {
+		return claims, nil
+	}
+
+	return claims, err
 }
