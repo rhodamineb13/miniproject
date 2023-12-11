@@ -31,3 +31,8 @@ type RegisterDBDTO struct {
 	Email    string    `db:"email"`
 	Password string    `db:"password"`
 }
+
+type AccessTokenDTO struct {
+	ID          uint   `json:"-"`
+	AccessToken string `json:"access_token"`
+}

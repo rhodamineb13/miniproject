@@ -2,6 +2,7 @@ package shared
 
 import (
 	"log"
+	"miniproject/common/crypto"
 	"miniproject/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ func Route() *gin.Engine {
 	books := r.Group("/books")
 	books.GET("", handler.BookHandler.GetAllBooks)
 	books.GET("/:id", handler.BookHandler.FindBookByID)
-	books.POST("", handler.BookHandler.AddNewBook)
+	books.POST("", middleware.Authorization(crypto.ADMIN, crypto.USER), handler.BookHandler.AddNewBook)
 
 	return r
 }

@@ -36,12 +36,18 @@ func (u *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	if err := u.userService.Login(c, login); err != nil {
+	tokenDTO, err := u.userService.Login(c, login)
+
+	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	c.JSON(http.StatusAccepted, "login success")
+	if tokenDTO.ID != 0 {
+		c.Set("user-id", tokenDTO.ID)
+	}
+
+	c.JSON(http.StatusAccepted, tokenDTO)
 }
 
 func NewUserHandler(userService service.UserService) *UserHandler {

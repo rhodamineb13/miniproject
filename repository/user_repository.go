@@ -14,7 +14,7 @@ type userRepo struct {
 
 type UserRepo interface {
 	Insert(context.Context, *dto.RegisterDBDTO) error
-	VerifyUser(context.Context, *dto.UserLoginDTO) error
+	VerifyUser(context.Context, *dto.UserLoginDTO) (uint, error)
 }
 
 func (u *userRepo) Insert(ctx context.Context, reg *dto.RegisterDBDTO) error {
@@ -26,13 +26,13 @@ func (u *userRepo) Insert(ctx context.Context, reg *dto.RegisterDBDTO) error {
 	return err
 }
 
-func (u *userRepo) VerifyUser(ctx context.Context, login *dto.UserLoginDTO) error {
+func (u *userRepo) VerifyUser(ctx context.Context, login *dto.UserLoginDTO) (uint, error) {
 	var user dto.GetUserDTO
 	query := fmt.Sprintf(`SELECT * FROM users WHERE email = $1 AND password = $2`)
 
 	err := u.db.GetContext(ctx, &user, query, login.Email, login.Password)
 
-	return err
+	return user.ID, err
 }
 
 func NewUserRepo(db *sqlx.DB) UserRepo {

@@ -19,9 +19,11 @@ type ConfigEnv struct {
 	Duration     int
 }
 
-var Config *ConfigEnv
+var Config = NewConfig()
 
-func NewConfig() {
+func NewConfig() ConfigEnv {
+	var Config ConfigEnv
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal(err)
@@ -40,4 +42,6 @@ func NewConfig() {
 	Config.Issuer = os.Getenv("ISSUER")
 	Config.LibSecretKey = os.Getenv("SECRET_KEY")
 	Config.Duration = expiry
+
+	return Config
 }
