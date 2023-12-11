@@ -13,11 +13,8 @@ import (
 )
 
 func ConnectDB() (*sqlx.DB, error) {
-	conf, err := config.NewConfig()
-	if err != nil {
-		return nil, err
-	}
-	conn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", conf.Host, conf.Port, conf.User, conf.Password, conf.DBname)
+
+	conn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.Config.Host, config.Config.Port, config.Config.User, config.Config.Password, config.Config.DBname)
 	db, err := sqlx.Open("pgx", conn)
 	if err != nil {
 		return nil, err

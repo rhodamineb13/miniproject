@@ -17,6 +17,7 @@ var (
 	ErrAddBook         = NewCustomError(http.StatusBadRequest, "error adding new book")
 	ErrBooksEmpty      = NewCustomError(http.StatusOK, "there are no books yet")
 	ErrBookNotFound    = NewCustomError(http.StatusNotFound, "book not found")
+	ErrCreateToken     = NewCustomError(http.StatusInternalServerError, "create token failed")
 )
 
 func NewCustomError(statusCode int, message string) error {
