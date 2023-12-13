@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"log"
 	"miniproject/common/dto"
 	"miniproject/common/helper"
@@ -20,7 +21,9 @@ type BookService interface {
 
 func (b *bookService) AddBook(ctx context.Context, book *dto.AddBookDTO) error {
 	if err := b.bookRepo.Insert(ctx, book); err != nil {
-		log.Println(err)
+		if errors.Is(err, helper.ErrDuplicatedBook) {
+			return err
+		}
 		return helper.ErrAddBook
 	}
 	return nil
