@@ -54,8 +54,6 @@ func (u *userService) Register(ctx context.Context, reg *dto.RegisterUserDTO) er
 func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.AccessTokenDTO, error) {
 	//Admin Access Token
 
-	var BanCounter int
-
 	getInitCounter, err := u.redis.Get(ctx, login.Email).Int()
 	if err == nil {
 		if getInitCounter == 3 {
@@ -73,6 +71,8 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 			AccessToken: accessToken,
 		}, nil
 	}
+
+	var BanCounter int
 
 	user, errEmail := u.userRepo.VerifyUser(ctx, login)
 
