@@ -36,3 +36,9 @@ type AccessTokenDTO struct {
 	ID          uint   `json:"-"`
 	AccessToken string `json:"access_token"`
 }
+
+type ChangePasswordDTO struct {
+	ID          uint
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}

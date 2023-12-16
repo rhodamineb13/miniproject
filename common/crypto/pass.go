@@ -7,7 +7,7 @@ import (
 )
 
 func GeneratePassword(password string) (string, error) {
-	passByte := []byte("password")
+	passByte := []byte(password)
 
 	passEncrypt, err := bcrypt.GenerateFromPassword(passByte, 10)
 	if err != nil {
@@ -17,8 +17,7 @@ func GeneratePassword(password string) (string, error) {
 	return string(passEncrypt), nil
 }
 
-func ComparePassword(password, hash string) error {
-	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(hash))
-
+func ComparePassword(hash, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err
 }

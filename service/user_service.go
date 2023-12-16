@@ -3,16 +3,18 @@ package service
 import (
 	"context"
 	"errors"
-	"log"
 	"miniproject/common/crypto"
 	"miniproject/common/dto"
 	"miniproject/common/helper"
 	"miniproject/repository"
 	"os"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 type userService struct {
+	redis    *redis.Client
 	userRepo repository.UserRepo
 }
 
@@ -52,6 +54,15 @@ func (u *userService) Register(ctx context.Context, reg *dto.RegisterUserDTO) er
 func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.AccessTokenDTO, error) {
 	//Admin Access Token
 
+	var BanCounter int
+
+	getInitCounter, err := u.redis.Get(ctx, login.Email).Int()
+	if err == nil {
+		if getInitCounter == 3 {
+			return nil, helper.ErrTemporarilyBanned
+		}
+	}
+
 	if login.Email == os.Getenv("ADMIN_EMAIL") && login.Password == os.Getenv("ADMIN_PASSWORD") {
 		roles := []crypto.Role{crypto.ADMIN, crypto.USER}
 		accessToken, err := crypto.GenerateNewToken(login.Email, roles)
@@ -63,14 +74,22 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 		}, nil
 	}
 
-	user, err := u.userRepo.VerifyUser(ctx, login)
-	if err != nil {
-		log.Println(err)
-		return nil, helper.ErrLogin
-	}
+	user, errEmail := u.userRepo.VerifyUser(ctx, login)
 
-	err = crypto.ComparePassword(login.Password, user.Password)
-	if err != nil {
+	errPwd := crypto.ComparePassword(user.Password, login.Password)
+
+	if errEmail != nil || errPwd != nil {
+		getCounter, err := u.redis.Get(ctx, login.Email).Int()
+		if err != nil {
+			BanCounter++
+			u.redis.Set(ctx, login.Email, BanCounter, time.Minute*5)
+		}
+		if getCounter == 3 {
+			u.redis.Set(ctx, login.Email, getCounter, time.Minute*15)
+			return nil, helper.ErrTemporarilyBanned
+		}
+		getCounter++
+		u.redis.Set(ctx, login.Email, getCounter, time.Minute*5)
 		return nil, helper.ErrLogin
 	}
 
@@ -87,8 +106,9 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 	}, nil
 }
 
-func NewUserService(userRepo repository.UserRepo) UserService {
+func NewUserService(redis *redis.Client, userRepo repository.UserRepo) UserService {
 	return &userService{
+		redis:    redis,
 		userRepo: userRepo,
 	}
 }

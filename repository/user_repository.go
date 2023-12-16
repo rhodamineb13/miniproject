@@ -39,7 +39,7 @@ func (u *userRepo) VerifyUser(ctx context.Context, login *dto.UserLoginDTO) (dto
 	var user dto.GetUserDTO
 	query := fmt.Sprintf(`SELECT * FROM users WHERE email = $1`)
 
-	err := u.db.GetContext(ctx, &user, query, login.Email, login.Password)
+	err := u.db.GetContext(ctx, &user, query, login.Email)
 
 	return user, err
 }
