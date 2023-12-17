@@ -9,14 +9,16 @@ import (
 )
 
 type ConfigEnv struct {
-	Host         string
-	Port         string
-	User         string
-	Password     string
-	DBname       string
-	Issuer       string
-	LibSecretKey string
-	Duration     int
+	Host          string
+	Port          string
+	User          string
+	Password      string
+	DBname        string
+	Issuer        string
+	LibSecretKey  string
+	Duration      int
+	AdminEmail    string
+	AdminPassword string
 }
 
 var Config = NewConfig()
@@ -42,6 +44,8 @@ func NewConfig() ConfigEnv {
 	Config.Issuer = os.Getenv("ISSUER")
 	Config.LibSecretKey = os.Getenv("SECRET_KEY")
 	Config.Duration = expiry
+	Config.AdminEmail = os.Getenv("ADMIN_EMAIL")
+	Config.AdminPassword = os.Getenv("ADMIN_PASSWORD")
 
 	return Config
 }
