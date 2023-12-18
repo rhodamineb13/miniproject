@@ -33,7 +33,7 @@ type RegisterDBDTO struct {
 }
 
 type AccessTokenDTO struct {
-	ID          uint   `json:"-"`
+	ID          uint   `json:"id"`
 	AccessToken string `json:"access_token"`
 }
 

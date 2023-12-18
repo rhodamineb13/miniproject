@@ -17,12 +17,12 @@ var (
 )
 
 type JWTClaims struct {
-	Email string
-	Role  []Role
+	ID   uint
+	Role []Role
 	*jwt.RegisteredClaims
 }
 
-func NewClaims(email string, roles []Role) jwt.Claims {
+func NewClaims(id uint, roles []Role) jwt.Claims {
 
 	claims := &jwt.RegisteredClaims{
 		Issuer: config.Config.Issuer,
@@ -32,14 +32,14 @@ func NewClaims(email string, roles []Role) jwt.Claims {
 	}
 
 	return &JWTClaims{
-		Email:            email,
+		ID:               id,
 		Role:             roles,
 		RegisteredClaims: claims,
 	}
 }
 
-func GenerateNewToken(email string, roles []Role) (string, error) {
-	claims := NewClaims(email, roles)
+func GenerateNewToken(id uint, roles []Role) (string, error) {
+	claims := NewClaims(id, roles)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	accessToken, err := token.SignedString([]byte(config.Config.LibSecretKey))

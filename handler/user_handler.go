@@ -43,10 +43,6 @@ func (u *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	if tokenDTO.ID != 0 {
-		c.Set("user-id", tokenDTO.ID)
-	}
-
 	c.JSON(http.StatusAccepted, tokenDTO)
 }
 

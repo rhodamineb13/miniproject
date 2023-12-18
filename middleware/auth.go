@@ -27,6 +27,7 @@ func Authorization(roles ...crypto.Role) gin.HandlerFunc {
 				return
 			}
 		}
+		c.Set("user-id", claims.ID)
 		c.Next()
 
 	}

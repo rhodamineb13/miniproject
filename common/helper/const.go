@@ -18,6 +18,10 @@ var (
 	ErrTemporarilyBanned   = NewCustomError(http.StatusForbidden, "you are temporarily banned from login, try again in 15 minutes")
 	ErrGenerateToken       = NewCustomError(http.StatusInternalServerError, "error in creating token")
 	ErrBookAlreadyBorrowed = NewCustomError(http.StatusBadRequest, "you already borrowed this book")
+	ErrBookEmpty           = NewCustomError(http.StatusForbidden, "all books with this title are borrowed")
+	ErrBorrowBook          = NewCustomError(http.StatusInternalServerError, "error in borrowing book")
+	ErrUserUnidentified    = NewCustomError(http.StatusInternalServerError, "user unidentified")
+	ErrUserNotFound        = NewCustomError(http.StatusInternalServerError, "unexpected error: user not found")
 )
 
 const (

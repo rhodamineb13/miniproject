@@ -73,7 +73,7 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 		}
 
 		roles := []crypto.Role{crypto.ADMIN, crypto.USER}
-		accessToken, err := crypto.GenerateNewToken(login.Email, roles)
+		accessToken, err := crypto.GenerateNewToken(0, roles)
 		if err != nil {
 			return nil, helper.ErrGenerateToken
 		}
@@ -105,7 +105,12 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 		return nil, helper.ErrLogin
 	}
 
-	accessToken, err := crypto.GenerateNewToken(login.Email, []crypto.Role{crypto.USER})
+	id, err := u.userRepo.FindIDByEmail(ctx, login.Email)
+	if err != nil {
+		return nil, helper.ErrUserNotFound
+	}
+
+	accessToken, err := crypto.GenerateNewToken(id, []crypto.Role{crypto.USER})
 	if err != nil {
 		return nil, err
 	}

@@ -39,7 +39,7 @@ func (b *bookRepo) Insert(ctx context.Context, book *dto.AddBookDTO) error {
 
 func (b *bookRepo) Select(ctx context.Context) ([]dto.ShowBooksDTO, error) {
 	var books []dto.ShowBooksDTO
-	query := fmt.Sprintf(`SELECT id, isbn, title, author, description, quantity FROM books`)
+	query := fmt.Sprintf(`SELECT id, isbn, title, author, description, quantity FROM books ORDER BY id`)
 
 	err := b.db.SelectContext(ctx, &books, query)
 

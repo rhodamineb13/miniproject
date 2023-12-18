@@ -20,6 +20,7 @@ type BorrowRepo interface {
 
 func (b *borrowRepo) Borrow(ctx context.Context, req *dto.BorrowBookRequestDTO) error {
 	var bookID uint
+	var bookQty int
 
 	queryFind := fmt.Sprintf(`SELECT 1 FROM borrow_records WHERE book_id = $1 AND user_id = $2`)
 
@@ -27,9 +28,21 @@ func (b *borrowRepo) Borrow(ctx context.Context, req *dto.BorrowBookRequestDTO) 
 		return helper.ErrBookAlreadyBorrowed
 	}
 
+	queryQty := fmt.Sprintf(`SELECT quantity FROM books WHERE id = $1`)
+
+	if err := b.db.GetContext(ctx, &bookQty, queryQty, req.BookID); err != nil {
+		return err
+	}
+
+	if bookQty == 0 {
+		return helper.ErrBookEmpty
+	}
+
 	tx, err := b.db.BeginTx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelSerializable,
 	})
+
+	defer tx.Rollback()
 
 	if err != nil {
 		return err
@@ -55,6 +68,7 @@ func (b *borrowRepo) Borrow(ctx context.Context, req *dto.BorrowBookRequestDTO) 
 		return err
 	}
 
+	tx.Commit()
 	return nil
 }
 
