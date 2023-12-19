@@ -22,6 +22,7 @@ type userService struct {
 type UserService interface {
 	Register(context.Context, *dto.RegisterUserDTO) error
 	Login(context.Context, *dto.UserLoginDTO) (*dto.AccessTokenDTO, error)
+	ChangePassword(context.Context, *dto.ChangePasswordDTO) error
 }
 
 func (u *userService) Register(ctx context.Context, reg *dto.RegisterUserDTO) error {
@@ -86,7 +87,7 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 
 	var BanCounter int
 
-	user, errEmail := u.userRepo.VerifyUser(ctx, login)
+	user, errEmail := u.userRepo.VerifyUser(ctx, login.Email)
 
 	errPwd := crypto.ComparePassword(user.Password, login.Password)
 
@@ -119,6 +120,30 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 		ID:          user.ID,
 		AccessToken: accessToken,
 	}, nil
+}
+
+func (u *userService) ChangePassword(ctx context.Context, change *dto.ChangePasswordDTO) error {
+	email, err := u.userRepo.FindEmailByID(ctx, change.ID)
+	if err != nil {
+		return helper.ErrUserNotFound
+	}
+
+	user, err := u.userRepo.VerifyUser(ctx, email)
+	if err != nil {
+		return helper.ErrUserNotFound
+	}
+
+	err = crypto.ComparePassword(user.Password, change.OldPassword)
+	if err != nil {
+		return helper.ErrPasswordsDoNotMatch
+	}
+
+	err = u.userRepo.UpdatePassword(ctx, change)
+	if err != nil {
+		return helper.ErrChangePassword
+	}
+
+	return nil
 }
 
 func NewUserService(redis *redis.Client, userRepo repository.UserRepo) UserService {

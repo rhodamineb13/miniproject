@@ -22,6 +22,9 @@ var (
 	ErrBorrowBook          = NewCustomError(http.StatusInternalServerError, "error in borrowing book")
 	ErrUserUnidentified    = NewCustomError(http.StatusInternalServerError, "user unidentified")
 	ErrUserNotFound        = NewCustomError(http.StatusInternalServerError, "unexpected error: user not found")
+	ErrPasswordsDoNotMatch = NewCustomError(http.StatusBadRequest, "the passwords do not match")
+	ErrChangePassword      = NewCustomError(http.StatusInternalServerError, "error in changing password")
+	ErrReturnBook          = NewCustomError(http.StatusInternalServerError, "error in returning the book")
 )
 
 const (

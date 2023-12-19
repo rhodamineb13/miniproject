@@ -14,6 +14,7 @@ type borrowService struct {
 
 type BorrowService interface {
 	Borrow(context.Context, *dto.BorrowBookRequestDTO) error
+	ReturnBook(context.Context, *dto.ReturnBookRequest) error
 }
 
 func (b *borrowService) Borrow(ctx context.Context, req *dto.BorrowBookRequestDTO) error {
@@ -26,6 +27,14 @@ func (b *borrowService) Borrow(ctx context.Context, req *dto.BorrowBookRequestDT
 			return helper.ErrBorrowBook
 		}
 	}
+	return nil
+}
+
+func (b *borrowService) ReturnBook(ctx context.Context, ret *dto.ReturnBookRequest) error {
+	if err := b.borrowRepo.ReturnBook(ctx, ret); err != nil {
+		return helper.ErrReturnBook
+	}
+
 	return nil
 }
 

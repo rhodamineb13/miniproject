@@ -46,6 +46,38 @@ func (b *BorrowHandler) RequestBorrow(c *gin.Context) {
 	})
 }
 
+func (b *BorrowHandler) ReturnBook(c *gin.Context) {
+	user, exists := c.Get("user-id")
+	if !exists {
+		_ = c.Error(helper.ErrUserUnidentified)
+		return
+	}
+
+	userID := user.(uint)
+
+	book := c.Param("id")
+	bookID, err := strconv.Atoi(book)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	ret := &dto.ReturnBookRequest{
+		UserID: uint(userID),
+		BookID: uint(bookID),
+	}
+
+	if err := b.borrowService.ReturnBook(c, ret); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "book successfully returned",
+	})
+
+}
+
 func NewBorrowHandler(borrowService service.BorrowService) *BorrowHandler {
 	return &BorrowHandler{
 		borrowService: borrowService,
