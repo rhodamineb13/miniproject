@@ -20,6 +20,10 @@ func Route() *gin.Engine {
 	r.POST("/sign-up", handler.UserHandler.RegisterUser)
 	r.POST("/login", handler.UserHandler.Login)
 
+	user := r.Group("/user", middleware.Authorization(crypto.USER))
+	user.POST("/return", handler.BorrowHandler.ReturnBook)
+	user.POST("/change-password", handler.UserHandler.ChangePassword)
+
 	books := r.Group("/books")
 	books.GET("", handler.BookHandler.GetAllBooks)
 	books.GET("/:id", middleware.Authorization(crypto.USER), handler.BookHandler.FindBookByID)

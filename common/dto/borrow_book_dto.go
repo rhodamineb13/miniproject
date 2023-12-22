@@ -19,5 +19,5 @@ type BorrowListDTO struct {
 
 type ReturnBookRequest struct {
 	BookID uint `json:"book_id"`
-	UserID uint `json:"user_id"`
+	UserID uint
 }

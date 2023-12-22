@@ -74,8 +74,16 @@ func (b *borrowRepo) Borrow(ctx context.Context, req *dto.BorrowBookRequestDTO) 
 }
 
 func (b *borrowRepo) ReturnBook(ctx context.Context, ret *dto.ReturnBookRequest) error {
-	queryReturn := fmt.Sprintf(`UPDATE borrow_records SET returned_at = NOW() WHERE book_id = $1 AND user_id = $2`)
+	var id uint
+
+	queryFind := fmt.Sprintf(`SELECT id FROM borrow_records WHERE book_id = $1 AND user_id = $2 AND returned_at IS NULL`)
+	queryReturn := fmt.Sprintf(`UPDATE borrow_records SET returned_at = NOW() WHERE book_id = $1 AND user_id = $2 AND returned_at IS NULL`)
 	queryAddQty := fmt.Sprintf(`UPDATE books SET quantity = quantity + 1 WHERE id = $1`)
+
+	err := b.db.GetContext(ctx, &id, queryFind, ret.BookID, ret.UserID)
+	if err != nil {
+		return err
+	}
 
 	tx, err := b.db.BeginTx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelSerializable,

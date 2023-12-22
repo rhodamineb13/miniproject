@@ -27,7 +27,7 @@ func NewClaims(id uint, roles []Role) jwt.Claims {
 	claims := &jwt.RegisteredClaims{
 		Issuer: config.Config.Issuer,
 		ExpiresAt: &jwt.NumericDate{
-			Time: time.Now().Add(time.Hour * time.Duration(config.Config.Duration)),
+			Time: time.Now().Add(time.Second * time.Duration(config.Config.Duration)),
 		},
 	}
 

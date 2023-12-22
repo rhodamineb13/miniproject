@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS books(
     author VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     quantity BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMP
 );

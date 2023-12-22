@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"miniproject/common/crypto"
 	"miniproject/common/utils"
 	"strings"
@@ -27,6 +28,8 @@ func Authorization(roles ...crypto.Role) gin.HandlerFunc {
 				return
 			}
 		}
+		log.Println("ID:", claims.ID)
+		log.Println(bearerToken)
 		c.Set("user-id", claims.ID)
 		c.Next()
 
