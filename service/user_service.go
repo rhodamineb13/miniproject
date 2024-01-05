@@ -8,7 +8,6 @@ import (
 	"miniproject/common/dto"
 	"miniproject/common/helper"
 	"miniproject/repository"
-	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -63,7 +62,7 @@ func (u *userService) Login(ctx context.Context, login *dto.UserLoginDTO) (*dto.
 
 	//Admin Access Token
 
-	if login.Email == os.Getenv("ADMIN_EMAIL") {
+	if login.Email == config.Config.AdminEmail {
 		hashPwd, err := crypto.GeneratePassword(login.Password)
 		if err != nil {
 			return nil, helper.ErrGeneratePassword

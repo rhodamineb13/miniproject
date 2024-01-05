@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"miniproject/common/config"
 	"miniproject/common/shared"
 	"net/http"
 )
@@ -13,5 +15,9 @@ func main() {
 		Handler: r,
 	}
 
+	conf := config.NewConfig()
+	fmt.Println(conf)
+
 	s.ListenAndServe()
+
 }
