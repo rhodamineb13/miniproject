@@ -38,8 +38,6 @@ func MigrateUp(db *sqlx.DB) error {
 		return err
 	}
 
-	m.Force(1)
-
 	err = m.Up()
 	if err != nil && err != migrate.ErrNoChange {
 		return err
