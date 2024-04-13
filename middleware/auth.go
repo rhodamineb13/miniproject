@@ -35,3 +35,7 @@ func Authorization(roles ...crypto.Role) gin.HandlerFunc {
 
 	}
 }
+
+func AddTwoNumber(x, y int) int {
+	return x + y
+}
